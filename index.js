@@ -1,49 +1,69 @@
 const express = require('express');
 const mongoose = require('mongoose');
-require('dotenv').config();
-const userRoutes = require("./src/routes/message");
+const { graphqlHTTP } = require('express-graphql');
+const { buildSchema } = require('graphql');
 const cors = require('cors');
+require('dotenv').config();
 
-//comment
-
-const app = express();
 const PORT = process.env.PORT || 9000;
 
-console.log("1");
-
-//midelware
-app.use(cors());
-app.use(express.json());
-app.use('/api', userRoutes);
-
-console.log("2");
-
-const corsOptions = {
-  origin: 'https://mnatorres.github.io',
-  optionsSuccessStatus: 200 
-};
-
-app.use(cors(corsOptions));
-
-
-//routes
-app.get('/', (req, res) => {
-    res.header('Access-Control-Allow-Origin', 'https://mnatorres.github.io');
-    res.send("Bienvenidos a mi Api");
-})
-
-console.log("3");
-
-
-//mongodb conection
+// Conexión a la base de datos de MongoDB
 mongoose.connect(process.env.MONGODB_URI)
-.then(() => console.log("Estas conectado a MONGODB ATLAS"))
+.then(() => console.log("Estás conectado a MongoDB Atlas"))
 .catch((error) => console.error(error));
 
-console.log("4");
+// Definición del modelo de mensaje
+const messageSchema = new mongoose.Schema({
+  from: String,
+  to: String,
+  message: String,
+  timestamp: String,
+});
 
+const Message = mongoose.model('Message', messageSchema);
 
-app.listen(PORT, () => console.log("El servidor se esta escuchando en el puerto", PORT));
+// Definición del esquema de GraphQL
+const schema = buildSchema(`
+  type Message {
+    id: ID!
+    from: String!
+    to: String!
+    message: String!
+    timestamp: String!
+  }
 
-module.exports = app;
+  type Query {
+    messages: [Message!]!
+  }
 
+  type Mutation {
+    createMessage(from: String!, to: String!, message: String!, timestamp: String!): Message!
+  }
+`);
+
+// Implementación de las resolvers
+const rootValue = {
+  messages: async () => {
+    const messages = await Message.find();
+    return messages;
+  },
+  createMessage: async ({ from, to, message, timestamp }) => {
+    const newMessage = new Message({ from, to, message, timestamp });
+    await newMessage.save();
+    return newMessage;
+  },
+};
+
+// Configuración de Express
+const app = express();
+app.use(cors());
+app.use('/graphql', graphqlHTTP({
+  schema,
+  rootValue,
+  graphiql: true,
+}));
+
+// Arranque del servidor
+app.listen(PORT, () => {
+  console.log(`Servidor iniciado en http://localhost:${PORT}/graphql`);
+});
