@@ -9,7 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 9000;
 
 const corsOptions = {
-  origin: "https://main--luminous-jelly-479ac5.netlify.app",
+  origin: ["https://main--luminous-jelly-479ac5.netlify.app", "http://localhost:5173"],
   optionsSuccessStatus: 200,
 };
 
@@ -18,12 +18,9 @@ app.use(express.json());
 app.use("/api", messageRoutes);
 app.use("/api", userRoutes);
 
-
-
 app.use(cors(corsOptions));
 
 app.get("/", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "https://main--luminous-jelly-479ac5.netlify.app");
   res.send("Bienvenidos a mi Api");
 });
 

@@ -1,9 +1,7 @@
 const express = require("express");
 const messageSchema = require("../models/message");
-const cors = require("cors");
 
 const app = express();
-app.use(cors());
 
 const router = express.Router();
 
