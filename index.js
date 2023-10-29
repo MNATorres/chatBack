@@ -8,20 +8,22 @@ const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 9000;
 
-app.use(cors());
-app.use(express.json());
-app.use("/api", messageRoutes);
-app.use("/api", userRoutes);
-
 const corsOptions = {
-  origin: "https://mnatorres.github.io",
+  origin: "https://main--luminous-jelly-479ac5.netlify.app",
   optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
+app.use(express.json());
+app.use("/api", messageRoutes);
+app.use("/api", userRoutes);
+
+
+
+app.use(cors(corsOptions));
 
 app.get("/", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "https://mnatorres.github.io");
+  res.header("Access-Control-Allow-Origin", "https://main--luminous-jelly-479ac5.netlify.app");
   res.send("Bienvenidos a mi Api");
 });
 
