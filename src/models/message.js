@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const messageSchema = mongoose.Schema({
-   sender: {
+  sender: {
     type: String,
   },
   text: {
@@ -12,5 +12,4 @@ const messageSchema = mongoose.Schema({
   },
 });
 
-
-module.exports = mongoose.model('Message', messageSchema);
+module.exports = mongoose.model("Message", messageSchema);
