@@ -9,7 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 9000;
 
 const corsOptions = {
-  origin: ["https://main--luminous-jelly-479ac5.netlify.app", "http://localhost:5173"],
+  origin: ["https://main--luminous-jelly-479ac5.netlify.app", "http://localhost:5173, https://gbsh2x1h-5173.brs.devtunnels.ms/"],
   optionsSuccessStatus: 200,
 };
 
